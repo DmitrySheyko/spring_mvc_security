@@ -1,15 +1,14 @@
 package org.example.app.services;
 
+import org.apache.log4j.Logger;
 import org.example.web.dto.Book;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.log4j.Logger;
 
 @Repository
 public class BookRepository implements ProjectRepository<Book>, ApplicationContextAware {
@@ -19,26 +18,53 @@ public class BookRepository implements ProjectRepository<Book>, ApplicationConte
     private ApplicationContext context;
 
     @Override
-    public List<Book> retreiveAll() {
+    public List<Book> retrieveAll() {
         return new ArrayList<>(repo);
     }
 
     @Override
     public void store(Book book) {
         book.setId(context.getBean(IdProvider.class).provideId(book));
-        logger.info("store new book: " + book);
+        logger.info("In bookRepository successfully saved book id=" + book.getId());
         repo.add(book);
     }
 
     @Override
-    public boolean removeItemById(String bookIdToRemove) {
-        for (Book book : retreiveAll()) {
+    public void removeItemById(String bookIdToRemove) {
+        for (Book book : retrieveAll()) {
             if (book.getId().equals(bookIdToRemove)) {
-                logger.info("remove book completed: " + book);
-                return repo.remove(book);
+                repo.remove(book);
+                logger.info("In bookRepository successfully deleted book id=" + bookIdToRemove);
             }
         }
-        return false;
+    }
+
+    @Override
+    public void removeByRegex(String authorForDelete, String titleForDelete, String sizeForDelete) {
+        List<Book> listForDelete = new ArrayList<>();
+        int size;
+        for (Book book : repo) {
+            boolean shouldBeDeletedByAuthor = authorForDelete.equals("*") || authorForDelete.equals(book.getAuthor());
+            boolean shouldBeDeletedByTitle = titleForDelete.equals("*") || titleForDelete.equals(book.getTitle());
+            boolean shouldBeDeletedBySize;
+            if (sizeForDelete.equals("*")) {
+                shouldBeDeletedBySize = true;
+            } else if (sizeForDelete.charAt(0) == '>') {
+                size = Integer.parseInt(sizeForDelete.substring(1));
+                shouldBeDeletedBySize = book.getSize() > size;
+            } else if (sizeForDelete.charAt(0) == '<') {
+                size = Integer.parseInt(sizeForDelete.substring(1));
+                shouldBeDeletedBySize = book.getSize() < size;
+            } else {
+                size = Integer.parseInt(sizeForDelete);
+                shouldBeDeletedBySize = size == book.getSize();
+            }
+            if (shouldBeDeletedByAuthor && shouldBeDeletedByTitle && shouldBeDeletedBySize) {
+                listForDelete.add(book);
+            }
+        }
+        repo.removeAll(listForDelete);
+        logger.info("In bookRepository successfully completed deletion by regex=");
     }
 
     @Override
@@ -46,12 +72,12 @@ public class BookRepository implements ProjectRepository<Book>, ApplicationConte
         this.context = applicationContext;
     }
 
-    private void defaultInit() {
-        logger.info("default INIT in book repo bean");
+    public void defaultInit() {
+        logger.info("default init in book repo");
     }
 
-    private void defaultDestroy() {
-        logger.info("default DESTROY in book repo bean");
+    public void defaultDestroy() {
+        logger.info("default destroy in book repo");
     }
 }
 

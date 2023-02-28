@@ -3,10 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>Custom 404</title>
+    <style>
+        .message{
+            font-size: 24px;
+        }
+    </style>
 </head>
 <body>
 <h1>Custom Book Shelf 404 Page (Not Found)</h1>
-<p th:text="${errorMessage}"></p>
-<a href="/simple_mvc_war_exploded/login">back to login page</a>
+<p class="message" th:text="${errorMessage}"></p>
+<a href="/spring_mvc_xml_war_exploded/login">back to login page</a>
 </body>
 </html>
+

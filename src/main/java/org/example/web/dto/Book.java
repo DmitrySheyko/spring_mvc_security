@@ -1,13 +1,20 @@
 package org.example.web.dto;
 
-import javax.validation.constraints.Digits;
-
 public class Book {
     private String id;
     private String author;
     private String title;
-    @Digits(integer = 4, fraction = 0)
     private Integer size;
+
+    public Book(String id, String author, String title, Integer size) {
+        this.id = id;
+        this.author = author;
+        this.title = title;
+        this.size = size;
+    }
+
+    public Book() {
+    }
 
     public String getId() {
         return id;
@@ -39,10 +46,5 @@ public class Book {
 
     public void setSize(Integer size) {
         this.size = size;
-    }
-
-    @Override
-    public String toString(){
-        return "Book{"+"id="+id+", author='"+author+'\''+", title='"+title+'\''+", size="+size+'\'';
     }
 }

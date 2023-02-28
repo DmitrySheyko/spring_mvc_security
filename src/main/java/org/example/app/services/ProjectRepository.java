@@ -3,9 +3,13 @@ package org.example.app.services;
 import java.util.List;
 
 public interface ProjectRepository<T> {
-    List<T> retreiveAll();
+
+    List<T> retrieveAll();
 
     void store(T book);
 
-    boolean removeItemById(String bookIdToRemove);
+    void removeItemById(String bookIdToRemove);
+
+    void removeByRegex(String authorForDelete, String titleForDelete, String sizeForDelete);
+
 }

@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta http-equiv="content-type" content="text/html; charset=utf8"/>
     <title>My book shelf</title>
     <style>
         #root_container {
             position: absolute;
             left: 50%;
-            top: 50%;
+            top: 40%;
             transform: translate(-50%, -50%);
         }
 
@@ -28,6 +28,10 @@
         th, td {
             border-bottom: 1px solid #ddd;
         }
+        .description_text{
+            position: relative;
+            font-size: 12px;
+        }
     </style>
 </head>
 <body>
@@ -43,7 +47,6 @@
                 </td>
                 <td>
                     <input type="text" placeholder="size (pages)" th:field="*{size}">
-                    <p th:if="${#fields.hasErrors()}">field value must be digit and less than 4 signs</p>
                 </td>
                 <td>
                     <input type="submit" value="save">
@@ -53,7 +56,7 @@
     </form>
 
 
-    <form method="post" th:action="@{/books/remove}" th:object="${bookIdToRemoove}">
+    <form method="post" th:action="@{/books/remove}" th:object="${bookIdToRemove}">
         <table>
             <tr>
                 <td>
@@ -68,6 +71,27 @@
             </tr>
         </table>
     </form>
+
+    <form method="post" th:action="@{/books/removeByRegex}">
+        <table>
+            <tr>
+                <td>
+                    <input type="text" placeholder="regex" th:name="queryRegex">
+                </td>
+                <td>
+                    <input type="submit" value="remove by regex">
+                </td>
+            </tr>
+        </table>
+    </form>
+    <p class="description_text">Regex format for searching and delete of books: [author]/[book title]/[size] <br>
+        */*/* - delete all books <br>
+        Charles Dickens/*/* - delete all books of Charles Dickens <br>
+        */Good book/* - delete all books titled Good book <br>
+        */*/100 - delete all books with size 100 pages" <br>
+        */*/&gt 100 - delete all books with size more than 100 pages" <br>
+        */*/&lt 100 - delete all books with size less than 100 pages" </p>
+
 
     <table id="books">
         <tr>

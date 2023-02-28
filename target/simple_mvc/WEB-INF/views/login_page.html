@@ -6,7 +6,7 @@
         #login_form {
             position: absolute;
             left: 50%;
-            top: 50%;
+            top: 40%;
             transform: translate(-50%, -50%);
         }
 
@@ -14,16 +14,21 @@
             margin-bottom: 10px;
         }
 
+        .first_string{
+            font-size: 12px;
+            color: darkblue;
+        }
     </style>
 </head>
 <body>
 <div id="login_form">
     <form method="post" th:action="@{/login/auth}" th:object="${loginForm}">
-        <img class="login_item" th:src="@{/images/book_item.png}">
+        <img width="70%" height="70%" class="login_item" th:src="@{images/Book_icon.png}" alt="Book">
         <br>
+        <p class="first_string"><b>Please, insert login and password</b></p>
         <input class="login_item" type="text" placeholder="enter username" th:field="*{username}">
         <br>
-        <input class="login_item" type="password" placeholder="password" th:field="*{password}">
+        <input class="login_item" type="password" placeholder="enter password" th:field="*{password}">
         <br>
         <input class="login_item" type="submit" value="login">
     </form>

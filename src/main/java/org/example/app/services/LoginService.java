@@ -7,10 +7,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class LoginService {
 
-    private Logger logger = Logger.getLogger(LoginService.class);
+    private final Logger logger = Logger.getLogger(LoginService.class);
 
     public boolean authenticate(LoginForm loginForm) {
-        logger.info("try auth with user-form: " + loginForm);
+        logger.info("Attempt of authentication in loginService");
         return loginForm.getUsername().equals("root") && loginForm.getPassword().equals("123");
     }
+
 }
