@@ -32,7 +32,7 @@ public class BookService {
         }
     }
 
-    public void removeBookId(String bookIdToRemove) {
+    public void removeBookId(Integer bookIdToRemove) {
         logger.info("Attempt of removing book by id in bookService");
         if (isBookIdCorrect(bookIdToRemove)) {
             bookRepo.removeItemById(bookIdToRemove);
@@ -66,7 +66,7 @@ public class BookService {
         return size != null && size >= 0;
     }
 
-    private boolean isBookIdCorrect(String bookId) {
+    private boolean isBookIdCorrect(Integer bookId) {
         return (bookId != null);
     }
 
