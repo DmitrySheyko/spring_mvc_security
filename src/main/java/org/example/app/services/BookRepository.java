@@ -56,35 +56,40 @@ public class BookRepository implements ProjectRepository<Book>, ApplicationConte
         for (Book book : retrieveAll()) {
             MapSqlParameterSource parameterSource = new MapSqlParameterSource();
             parameterSource.addValue("id", bookIdToRemove);
-jdbcTemplate.update("DELETE FROM books WHERE id = :id", parameterSource);
+            jdbcTemplate.update("DELETE FROM books WHERE id = :id", parameterSource);
             logger.info("In bookRepository successfully deleted book id=" + bookIdToRemove);
         }
     }
 
     @Override
     public void removeByRegex(String authorForDelete, String titleForDelete, String sizeForDelete) {
-        List<Book> listForDelete = new ArrayList<>();
-        int size;
-        for (Book book : retrieveAll()) {
-            boolean shouldBeDeletedByAuthor = authorForDelete.equals("*") || authorForDelete.equals(book.getAuthor());
-            boolean shouldBeDeletedByTitle = titleForDelete.equals("*") || titleForDelete.equals(book.getTitle());
-            boolean shouldBeDeletedBySize;
-            if (sizeForDelete.equals("*")) {
-                shouldBeDeletedBySize = true;
-            } else if (sizeForDelete.charAt(0) == '>') {
-                size = Integer.parseInt(sizeForDelete.substring(1));
-                shouldBeDeletedBySize = book.getSize() > size;
-            } else if (sizeForDelete.charAt(0) == '<') {
-                size = Integer.parseInt(sizeForDelete.substring(1));
-                shouldBeDeletedBySize = book.getSize() < size;
-            } else {
-                size = Integer.parseInt(sizeForDelete);
-                shouldBeDeletedBySize = size == book.getSize();
-            }
-            if (shouldBeDeletedByAuthor && shouldBeDeletedByTitle && shouldBeDeletedBySize) {
-                listForDelete.add(book);
-            }
-        }
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        parameterSource.addValue("author", authorForDelete);
+        parameterSource.addValue("title", titleForDelete);
+        parameterSource.addValue("size", Integer.parseInt(sizeForDelete));
+        jdbcTemplate.update("DELETE FROM books WHERE author = :author and title = :title and size  = :size;", parameterSource);
+//        List<Book> listForDelete = new ArrayList<>();
+//        int size;
+//        for (Book book : retrieveAll()) {
+//            boolean shouldBeDeletedByAuthor = authorForDelete.equals("*") || authorForDelete.equals(book.getAuthor());
+//            boolean shouldBeDeletedByTitle = titleForDelete.equals("*") || titleForDelete.equals(book.getTitle());
+//            boolean shouldBeDeletedBySize;
+//            if (sizeForDelete.equals("*")) {
+//                shouldBeDeletedBySize = true;
+//            } else if (sizeForDelete.charAt(0) == '>') {
+//                size = Integer.parseInt(sizeForDelete.substring(1));
+//                shouldBeDeletedBySize = book.getSize() > size;
+//            } else if (sizeForDelete.charAt(0) == '<') {
+//                size = Integer.parseInt(sizeForDelete.substring(1));
+//                shouldBeDeletedBySize = book.getSize() < size;
+//            } else {
+//                size = Integer.parseInt(sizeForDelete);
+//                shouldBeDeletedBySize = size == book.getSize();
+//            }
+//            if (shouldBeDeletedByAuthor && shouldBeDeletedByTitle && shouldBeDeletedBySize) {
+//                listForDelete.add(book);
+//            }
+//        }
 //        repo.removeAll(listForDelete);
         logger.info("In bookRepository successfully completed deletion by regex=");
     }

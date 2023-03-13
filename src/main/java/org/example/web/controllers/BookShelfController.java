@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import org.example.app.services.BookService;
 import org.example.web.dto.Book;
 import org.example.web.dto.BookIdToRemove;
+import org.example.web.dto.RegexToRemove;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -37,6 +39,7 @@ public class BookShelfController {
         logger.info("Request for show book_shelf page");
         model.addAttribute("book", new Book());
         model.addAttribute("bookIdToRemove", new BookIdToRemove());
+        model.addAttribute("regexToRemove", new RegexToRemove());
         model.addAttribute("bookList", bookService.getAllBooks());
         return "book_shelf";
     }
@@ -46,6 +49,7 @@ public class BookShelfController {
         if (bindingResult.hasErrors()) {
             model.addAttribute("book", book);
             model.addAttribute("bookIdToRemove", new BookIdToRemove());
+            model.addAttribute("regexToRemove", new RegexToRemove());
             model.addAttribute("bookList", bookService.getAllBooks());
             return "book_shelf";
         } else {
@@ -59,6 +63,7 @@ public class BookShelfController {
     public String removeBook(@Valid BookIdToRemove bookIdToRemove, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("book", new Book());
+            model.addAttribute("regexToRemove", new RegexToRemove());
             model.addAttribute("bookList", bookService.getAllBooks());
             return "book_shelf";
         } else {
@@ -69,18 +74,28 @@ public class BookShelfController {
     }
 
     @PostMapping("/removeByRegex")
-    public String removeBookByRegex(@RequestParam(value = "queryRegex") String regex) {
-        bookService.removeBooksByRegex(regex);
-        logger.info("Book deleted by regex Current repository size=" + bookService.getAllBooks().size());
-        return "redirect:/books/shelf";
+    public String removeBookByRegex(@Valid RegexToRemove regexToRemove, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("book", new Book());
+            model.addAttribute("bookIdToRemove", new BookIdToRemove());
+            model.addAttribute("bookList", bookService.getAllBooks());
+            return "book_shelf";
+        } else {
+            bookService.removeBooksByRegex(regexToRemove.getQueryRegex());
+            logger.info("Book deleted by regex Current repository size=" + bookService.getAllBooks().size());
+            return "redirect:/books/shelf";
+        }
     }
 
     @PostMapping("/uploadFile")
     public String uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
+        if (file.isEmpty()) {
+            return "redirect:/books/shelf";
+        }
         String name = file.getOriginalFilename();
         byte[] bytes = file.getBytes();
 
-//create dir
+        //create dir
         String rootPath = System.getProperty("catalina.home");
         File dir = new File(rootPath + File.separator + "external_uploads");
         if (!dir.exists()) {

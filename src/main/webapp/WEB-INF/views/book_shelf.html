@@ -33,6 +33,9 @@
             position: relative;
             font-size: 12px;
         }
+        .error_text{
+            font-size: 12px;
+        }
     </style>
 </head>
 <body>
@@ -53,6 +56,17 @@
                     <input type="submit" value="save">
                 </td>
             </tr>
+            <tr>
+                <td th:if="${#fields.hasErrors('author')}">
+                    <p class="error_text">Wrong author</p>
+                </td>
+                <td th:if="${#fields.hasErrors('title')}">
+                    <p class="error_text">Wrong title</p>
+                </td>
+                <td th:if="${#fields.hasErrors('size')}">
+                    <p class="error_text">Wrong size</p>
+                </td>
+            </tr>
         </table>
     </form>
 
@@ -67,24 +81,28 @@
                     <input type="submit" value="remove">
                 </td>
                 <td th:if="${#fields.hasErrors()}">
-                    <p>Wrong id or not found</p>
+                    <p class="error_text">Wrong id or not found</p>
                 </td>
             </tr>
         </table>
     </form>
 
-    <form method="post" th:action="@{/books/removeByRegex}">
+    <form method="post" th:action="@{/books/removeByRegex}" th:object="${regexToRemove}">
         <table>
             <tr>
                 <td>
-                    <input type="text" placeholder="regex" th:name="queryRegex">
+                    <input type="text" placeholder="regex" th:field="*{queryRegex}">
                 </td>
                 <td>
                     <input type="submit" value="remove by regex">
                 </td>
+                <td th:if="${#fields.hasErrors()}">
+                    <p class="error_text">Wrong regex or not found</p>
+                </td>
             </tr>
         </table>
     </form>
+
     <p class="description_text">Regex format for searching and delete of books: [author]/[book title]/[size] <br>
         */*/* - delete all books <br>
         Charles Dickens/*/* - delete all books of Charles Dickens <br>

@@ -1,9 +1,21 @@
 package org.example.web.dto;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+
 public class Book {
+
     private Integer id;
+
+    @NotBlank
     private String author;
+
+    @NotBlank
     private String title;
+
+    @NotNull
+    @Positive
     private Integer size;
 
     public Book(Integer id, String author, String title, Integer size) {
