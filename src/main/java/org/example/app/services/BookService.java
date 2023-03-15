@@ -43,14 +43,26 @@ public class BookService {
 
     public void removeBooksByRegex(String regex) {
         logger.info("Attempt of removing book by regex in bookService");
-        if (isRegexCorrect(regex)) {
-            String[] searchParameters = regex.split("/");
-            String authorForDelete = searchParameters[0];
-            String titleForDelete = searchParameters[1];
-            String sizeForDelete = searchParameters[2];
-            bookRepo.removeByRegex(authorForDelete, titleForDelete, sizeForDelete);
-        } else {
-            logger.info("Books hasn't removed. Regex is incorrect");
+        String[] searchParameters = regex.split("/");
+        String authorForDelete = searchParameters[0];
+        String titleForDelete = searchParameters[1];
+        String sizeForDelete = searchParameters[2];
+        if (authorForDelete.equals("*") && titleForDelete.equals("*") && sizeForDelete.equals("*")) {
+            bookRepo.removeAll();
+        } else if (authorForDelete.equals("*") && titleForDelete.equals("*") && !sizeForDelete.equals("*")) {
+            bookRepo.removeAllBySize(Integer.parseInt(sizeForDelete));
+        } else if (authorForDelete.equals("*") && !titleForDelete.equals("*") && sizeForDelete.equals("*")) {
+            bookRepo.removeAllByTitle(titleForDelete);
+        } else if (!authorForDelete.equals("*") && titleForDelete.equals("*") && sizeForDelete.equals("*")) {
+            bookRepo.removeAllByAuthor(authorForDelete);
+        } else if (authorForDelete.equals("*") && !titleForDelete.equals("*") && !sizeForDelete.equals("*")) {
+            bookRepo.removeAllByTitleAndSize(titleForDelete, Integer.parseInt(sizeForDelete));
+        } else if (!authorForDelete.equals("*") && !titleForDelete.equals("*") && sizeForDelete.equals("*")) {
+            bookRepo.removeAllByAuthorAndTitle(authorForDelete, titleForDelete);
+        } else if (!authorForDelete.equals("*") && titleForDelete.equals("*") && !sizeForDelete.equals("*")) {
+            bookRepo.removeAllByAuthorAndSize(authorForDelete, Integer.parseInt(sizeForDelete));
+        } else if (!authorForDelete.equals("*") && !titleForDelete.equals("*") && !sizeForDelete.equals("*")) {
+            bookRepo.removeAllByAuthorAndTitleAndSize(authorForDelete, titleForDelete, Integer.parseInt(sizeForDelete));
         }
     }
 
@@ -69,15 +81,7 @@ public class BookService {
     private boolean isBookIdCorrect(Integer bookId) {
         return (bookId != null);
     }
-
-    private boolean isRegexCorrect(String regex) {
-        String[] searchParameters = regex.split("/");
-        if (searchParameters.length != 3) return false;
-        return !StringUtils.isEmptyOrWhitespace(searchParameters[0]) &&
-                !StringUtils.isEmptyOrWhitespace(searchParameters[1]) &&
-                !StringUtils.isEmptyOrWhitespace(searchParameters[2]);
-    }
-
+    
     private void defaultInit() {
         logger.info("default INIT in bookService");
     }

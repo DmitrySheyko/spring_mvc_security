@@ -1,10 +1,8 @@
 package org.example.web.dto;
 
-import javax.validation.constraints.NotBlank;
-
 public class RegexToRemove {
 
-    @NotBlank
+    @RegexValidationAnnotation
     private String queryRegex;
 
     public RegexToRemove() {

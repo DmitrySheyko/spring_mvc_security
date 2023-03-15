@@ -3,6 +3,7 @@ org/example/web/config/WebContextConfig.class
 org/example/web/dto/LoginForm.class
 org/example/app/config/SecurityInit.class
 org/example/web/dto/Book.class
+org/example/web/dto/RegexToRemove.class
 org/example/app/services/IdProvider.class
 org/example/web/controllers/ErrorController.class
 org/example/web/controllers/LoginController.class

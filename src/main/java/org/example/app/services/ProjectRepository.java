@@ -10,6 +10,19 @@ public interface ProjectRepository<T> {
 
     void removeItemById(Integer bookIdToRemove);
 
-    void removeByRegex(String authorForDelete, String titleForDelete, String sizeForDelete);
+    void removeAll();
 
+    void removeAllBySize(int sizeForDelete);
+
+    void removeAllByTitle(String titleForDelete);
+
+    void removeAllByAuthor(String authorForDelete);
+
+    void removeAllByTitleAndSize(String titleForDelete, int parseInt);
+
+    void removeAllByAuthorAndTitle(String authorForDelete, String titleForDelete);
+
+    void removeAllByAuthorAndSize(String authorForDelete, int parseInt);
+
+    void removeAllByAuthorAndTitleAndSize(String authorForDelete, String titleForDelete, int parseInt);
 }

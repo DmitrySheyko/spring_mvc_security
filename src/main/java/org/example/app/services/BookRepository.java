@@ -6,7 +6,6 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -19,7 +18,6 @@ import java.util.List;
 public class BookRepository implements ProjectRepository<Book>, ApplicationContextAware {
 
     private final Logger logger = Logger.getLogger(BookRepository.class);
-    //    private final List<Book> repo = new ArrayList<>();
     private ApplicationContext context;
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
@@ -62,36 +60,76 @@ public class BookRepository implements ProjectRepository<Book>, ApplicationConte
     }
 
     @Override
-    public void removeByRegex(String authorForDelete, String titleForDelete, String sizeForDelete) {
+    public void removeAll() {
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        parameterSource.addValue("id", -1);
+        jdbcTemplate.update("DELETE FROM books WHERE id <> :id", parameterSource);
+        logger.info("In bookRepository successfully deleted all books");
+    }
+
+    @Override
+    public void removeAllBySize(int sizeForDelete) {
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        parameterSource.addValue("size", sizeForDelete);
+        jdbcTemplate.update("DELETE FROM books WHERE size = :size", parameterSource);
+        logger.info("In bookRepository successfully deleted all books with size=" + sizeForDelete);
+    }
+
+    @Override
+    public void removeAllByTitle(String titleForDelete) {
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        parameterSource.addValue("title", titleForDelete);
+        jdbcTemplate.update("DELETE FROM books WHERE title = :title", parameterSource);
+        logger.info("In bookRepository successfully deleted all books with title=" + titleForDelete);
+    }
+
+    @Override
+    public void removeAllByAuthor(String authorForDelete) {
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        parameterSource.addValue("author", authorForDelete);
+        jdbcTemplate.update("DELETE FROM books WHERE author = :author", parameterSource);
+        logger.info("In bookRepository successfully deleted all books with author=" + authorForDelete);
+    }
+
+    @Override
+    public void removeAllByTitleAndSize(String titleForDelete, int sizeForDelete) {
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        parameterSource.addValue("title", titleForDelete);
+        parameterSource.addValue("size", sizeForDelete);
+        jdbcTemplate.update("DELETE FROM books WHERE title = :title AND size = :size", parameterSource);
+        logger.info("In bookRepository successfully deleted all books with title=" + titleForDelete +
+                ", size=" + sizeForDelete);
+    }
+
+    @Override
+    public void removeAllByAuthorAndTitle(String authorForDelete, String titleForDelete) {
         MapSqlParameterSource parameterSource = new MapSqlParameterSource();
         parameterSource.addValue("author", authorForDelete);
         parameterSource.addValue("title", titleForDelete);
-        parameterSource.addValue("size", Integer.parseInt(sizeForDelete));
-        jdbcTemplate.update("DELETE FROM books WHERE author = :author and title = :title and size  = :size;", parameterSource);
-//        List<Book> listForDelete = new ArrayList<>();
-//        int size;
-//        for (Book book : retrieveAll()) {
-//            boolean shouldBeDeletedByAuthor = authorForDelete.equals("*") || authorForDelete.equals(book.getAuthor());
-//            boolean shouldBeDeletedByTitle = titleForDelete.equals("*") || titleForDelete.equals(book.getTitle());
-//            boolean shouldBeDeletedBySize;
-//            if (sizeForDelete.equals("*")) {
-//                shouldBeDeletedBySize = true;
-//            } else if (sizeForDelete.charAt(0) == '>') {
-//                size = Integer.parseInt(sizeForDelete.substring(1));
-//                shouldBeDeletedBySize = book.getSize() > size;
-//            } else if (sizeForDelete.charAt(0) == '<') {
-//                size = Integer.parseInt(sizeForDelete.substring(1));
-//                shouldBeDeletedBySize = book.getSize() < size;
-//            } else {
-//                size = Integer.parseInt(sizeForDelete);
-//                shouldBeDeletedBySize = size == book.getSize();
-//            }
-//            if (shouldBeDeletedByAuthor && shouldBeDeletedByTitle && shouldBeDeletedBySize) {
-//                listForDelete.add(book);
-//            }
-//        }
-//        repo.removeAll(listForDelete);
-        logger.info("In bookRepository successfully completed deletion by regex=");
+        jdbcTemplate.update("DELETE FROM books WHERE author = :author AND title = :title", parameterSource);
+        logger.info("In bookRepository successfully deleted all books with author=" + authorForDelete +
+                ", title=" + titleForDelete);
+    }
+
+    @Override
+    public void removeAllByAuthorAndSize(String authorForDelete, int sizeForDelete) {
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        parameterSource.addValue("author", authorForDelete);
+        parameterSource.addValue("size", sizeForDelete);
+        jdbcTemplate.update("DELETE FROM books WHERE author = :author AND size = :size", parameterSource);
+        logger.info("In bookRepository successfully deleted all books with author=" + authorForDelete +
+                ", size=" + sizeForDelete);
+    }
+
+    @Override
+    public void removeAllByAuthorAndTitleAndSize(String authorForDelete, String titleForDelete, int sizeForDelete) {
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        parameterSource.addValue("author", authorForDelete);
+        parameterSource.addValue("title", titleForDelete);
+        parameterSource.addValue("size", sizeForDelete);
+        jdbcTemplate.update("DELETE FROM books WHERE author = :author AND title = :title AND size = :size", parameterSource);
+        logger.info("In bookRepository successfully deleted all books with author=" + authorForDelete +
+                ", title=" + titleForDelete + ", size=" + sizeForDelete);
     }
 
     @Override

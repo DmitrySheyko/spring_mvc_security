@@ -8,6 +8,7 @@
 /home/dmitry/dev/spring_m2_4/src/main/java/org/example/app/services/BookService.java
 /home/dmitry/dev/spring_m2_4/src/main/java/org/example/app/services/IdProvider.java
 /home/dmitry/dev/spring_m2_4/src/main/java/org/example/web/dto/LoginForm.java
+/home/dmitry/dev/spring_m2_4/src/main/java/org/example/web/dto/RegexToRemove.java
 /home/dmitry/dev/spring_m2_4/src/main/java/org/example/app/config/AppContextConfig.java
 /home/dmitry/dev/spring_m2_4/src/main/java/org/example/app/config/DbConfig.java
 /home/dmitry/dev/spring_m2_4/src/main/java/org/example/App.java
